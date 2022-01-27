@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"path"
 
 	"github.com/gorilla/mux"
 
@@ -18,7 +19,7 @@ func New(filename string, port int) (*server, error) {
 	router := mux.NewRouter()
 
 	for _, route := range rec.Routes {
-		handler, err := route.Handler()
+		handler, err := route.Handler(path.Dir(filename))
 		if err != nil {
 			return nil, err
 		}

@@ -17,11 +17,11 @@ type Route struct {
 	once       sync.Once
 }
 
-func (route *Route) Handler() (http.Handler, error) {
+func (route *Route) Handler(fp string) (http.Handler, error) {
 	// initialize at -1 so the first Inc call sets it to 0
 	route.index = atomic.NewInt64(-1)
 	for _, res := range route.Responses {
-		if err := res.init(); err != nil {
+		if err := res.init(fp); err != nil {
 			return nil, err
 		}
 	}
