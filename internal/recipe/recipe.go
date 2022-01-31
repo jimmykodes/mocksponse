@@ -7,7 +7,8 @@ import (
 )
 
 type Recipe struct {
-	Routes []*Route `yaml:"routes"`
+	Routes  map[string]*Route `yaml:"routes"`
+	Default *Handler          `yaml:"default"`
 }
 
 func New(filename string) (*Recipe, error) {

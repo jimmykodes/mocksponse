@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"path"
-	"sync"
 
 	"github.com/gorilla/mux"
 
@@ -18,21 +16,22 @@ func New(filename string, port int) (*server, error) {
 		return nil, err
 	}
 	router := mux.NewRouter()
-	var once sync.Once
-	for _, route := range rec.Routes {
-		handler, err := route.Handler(path.Dir(filename))
+	if rec.Default != nil {
+		router.NotFoundHandler, err = rec.Default.Handler(filename)
 		if err != nil {
 			return nil, err
 		}
-		r := router.Handle(route.Path, handler)
-		if route.Fallback {
-			once.Do(func() {
-				router.NotFoundHandler = handler
-				router.MethodNotAllowedHandler = handler
-			})
-		}
-		if len(route.Methods) > 0 {
-			r.Methods(route.Methods...)
+	}
+	for routePath, route := range rec.Routes {
+		for methodString, method := range route.Methods() {
+			if method == nil {
+				continue
+			}
+			handler, err := method.Handler(filename)
+			if err != nil {
+				return nil, err
+			}
+			router.Handle(routePath, handler).Methods(methodString)
 		}
 	}
 

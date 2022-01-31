@@ -1,7 +1,12 @@
 routes:
-  - path: /
-    fallback: true
-    responses:
-      - code: 200
-        data: |
-          {"success": true}
+  /:
+    get:
+      responses:
+        - code: 200
+          data: |
+            {"success": true}
+default:
+  responses:
+    - code: 200
+      data: |
+        {"default": true}
