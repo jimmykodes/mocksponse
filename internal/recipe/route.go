@@ -12,6 +12,7 @@ import (
 type Route struct {
 	Path       string      `yaml:"path"`
 	Sequential bool        `yaml:"sequential"`
+	Fallback   bool        `yaml:"fallback"`
 	Methods    []string    `yaml:"methods"`
 	Responses  []*Response `yaml:"responses"`
 	index      *atomic.Int64
