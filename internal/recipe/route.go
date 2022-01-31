@@ -12,6 +12,7 @@ import (
 type Route struct {
 	Path       string      `yaml:"path"`
 	Sequential bool        `yaml:"sequential"`
+	Methods    []string    `yaml:"methods"`
 	Responses  []*Response `yaml:"responses"`
 	index      *atomic.Int64
 	once       sync.Once

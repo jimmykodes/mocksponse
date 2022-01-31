@@ -23,7 +23,10 @@ func New(filename string, port int) (*server, error) {
 		if err != nil {
 			return nil, err
 		}
-		router.Handle(route.Path, handler)
+		r := router.Handle(route.Path, handler)
+		if len(route.Methods) > 0 {
+			r.Methods(route.Methods...)
+		}
 	}
 
 	svr := &http.Server{
