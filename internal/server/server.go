@@ -43,6 +43,6 @@ type server struct {
 }
 
 func (s server) Run() error {
-	log.Println("running")
+	log.Printf("running at %s\n", s.svr.Addr)
 	return s.svr.ListenAndServe()
 }
