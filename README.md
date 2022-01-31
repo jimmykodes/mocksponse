@@ -1,4 +1,4 @@
-# mock-sponse
+# mocksponse
 An api response mocking server
 
 ## Example Recipe File

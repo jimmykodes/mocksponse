@@ -9,7 +9,7 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/jimmykodes/mock-sponse/internal/recipe"
+	"github.com/jimmykodes/mocksponse/internal/recipe"
 )
 
 func New(filename string, port int) (*server, error) {

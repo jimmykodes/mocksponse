@@ -1,10 +1,10 @@
 FROM golang:1-buster as builder
-WORKDIR /go/src/mock-sponse
+WORKDIR /go/src/mocksponse
 ADD . .
 ENV GOBIN=/
 RUN go install .
 
 FROM debian:buster
-COPY --from=builder /mock-sponse /usr/local/sbin
-ADD recipe.yaml /etc/mock-sponse/recipe.yaml
-CMD ["mock-sponse", "-f", "/etc/mock-sponse/recipe.yaml"]
+COPY --from=builder /mocksponse /usr/local/sbin
+ADD recipe.yaml /etc/mocksponse/recipe.yaml
+CMD ["mocksponse", "-f", "/etc/mocksponse/recipe.yaml"]

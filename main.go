@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/jimmykodes/mock-sponse/internal/server"
+	"github.com/jimmykodes/mocksponse/internal/server"
 )
 
 func main() {

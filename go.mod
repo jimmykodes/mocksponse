@@ -1,4 +1,4 @@
-module github.com/jimmykodes/mock-sponse
+module github.com/jimmykodes/mocksponse
 
 go 1.17
 
