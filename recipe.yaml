@@ -1,0 +1,7 @@
+routes:
+  - path: /
+    fallback: true
+    responses:
+      - code: 200
+        data: |
+          {"success": true}
