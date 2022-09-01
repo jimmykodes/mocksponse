@@ -1,10 +1,13 @@
 package recipe
 
 import (
+	"fmt"
+	"io"
 	"log"
 	"math/rand"
 	"net/http"
 	"path"
+	"strings"
 
 	"go.uber.org/atomic"
 )
@@ -29,7 +32,10 @@ func (m *Handler) Handler(fp string) (http.Handler, error) {
 		m.index = atomic.NewInt64(-1)
 	}
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("%7s\t%s\n", r.Method, r.URL.Path)
+		var sb strings.Builder
+		fmt.Fprintf(&sb, "%7s\t%s\t%s", r.Method, r.URL.Path, r.URL.RawQuery)
+		io.Copy(&sb, r.Body)
+		log.Println(sb.String())
 		var index int64
 		if m.single {
 			index = 0
