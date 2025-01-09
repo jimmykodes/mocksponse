@@ -16,9 +16,9 @@ func New(filename string) (*Recipe, error) {
 	if err != nil {
 		return nil, err
 	}
-	r := &Recipe{}
-	if err := yaml.NewDecoder(f).Decode(r); err != nil {
+	var r Recipe
+	if err := yaml.NewDecoder(f).Decode(&r); err != nil {
 		return nil, err
 	}
-	return r, nil
+	return &r, nil
 }

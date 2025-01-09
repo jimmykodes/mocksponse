@@ -3,7 +3,6 @@ module github.com/jimmykodes/mocksponse
 go 1.23
 
 require (
-	github.com/gorilla/mux v1.8.1
 	github.com/jimmykodes/gommand v0.11.0
 	go.uber.org/atomic v1.11.0
 	gopkg.in/yaml.v2 v2.4.0

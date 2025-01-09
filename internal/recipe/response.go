@@ -6,8 +6,6 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
-
-	"github.com/gorilla/mux"
 )
 
 type Response struct {
@@ -37,7 +35,7 @@ func (resp *Response) write(r *http.Request, w http.ResponseWriter) error {
 		Vars   map[string]string
 		Params url.Values
 	}{
-		Vars:   mux.Vars(r),
+		Vars:   map[string]string{},
 		Params: r.URL.Query(),
 	})
 }

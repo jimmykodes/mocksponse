@@ -8,14 +8,13 @@ import (
 	"net/http"
 	"path"
 	"strings"
-
-	"go.uber.org/atomic"
+	"sync/atomic"
 )
 
 type Handler struct {
 	Sequential bool        `yaml:"sequential"`
 	Responses  []*Response `yaml:"responses"`
-	index      *atomic.Int64
+	index      atomic.Int64
 	single     bool
 }
 
@@ -29,18 +28,18 @@ func (m *Handler) Handler(fp string) (http.Handler, error) {
 		m.single = true
 	} else if m.Sequential {
 		// initialize at -1 so the first Inc call sets it to 0
-		m.index = atomic.NewInt64(-1)
+		m.index.Store(-1)
 	}
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var sb strings.Builder
 		fmt.Fprintf(&sb, "%7s\t%s\t%s", r.Method, r.URL.Path, r.URL.RawQuery)
-		io.Copy(&sb, r.Body)
+		_, _ = io.Copy(&sb, r.Body)
 		log.Println(sb.String())
 		var index int64
 		if m.single {
 			index = 0
 		} else if m.Sequential {
-			index = m.index.Inc()
+			index = m.index.Add(1)
 			// make sure we are inside the bounds of the responses but don't touch the atomic counter
 			index %= int64(len(m.Responses))
 		} else {

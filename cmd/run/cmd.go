@@ -25,7 +25,7 @@ func Cmd() *gommand.Command {
 			if err != nil {
 				return err
 			}
-			return svr.Run()
+			return svr.ListenAndServe()
 		},
 	}
 	return cmd

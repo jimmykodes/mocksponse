@@ -2,22 +2,20 @@ package server
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 
-	"github.com/gorilla/mux"
-
 	"github.com/jimmykodes/mocksponse/internal/recipe"
+	"github.com/jimmykodes/mocksponse/internal/router"
 )
 
-func New(filename string, port int) (*server, error) {
+func New(filename string, port int) (*http.Server, error) {
+	mux := router.New()
 	rec, err := recipe.New(filename)
 	if err != nil {
 		return nil, err
 	}
-	router := mux.NewRouter()
 	if rec.Default != nil {
-		router.NotFoundHandler, err = rec.Default.Handler(filename)
+		mux.NotFoundHandler, err = rec.Default.Handler(filename)
 		if err != nil {
 			return nil, err
 		}
@@ -31,24 +29,12 @@ func New(filename string, port int) (*server, error) {
 			if err != nil {
 				return nil, err
 			}
-			router.Handle(routePath, handler).Methods(methodString)
+			mux.Register(routePath, methodString, handler)
 		}
 	}
-
 	svr := &http.Server{
 		Addr:    fmt.Sprintf(":%d", port),
-		Handler: router,
+		Handler: mux,
 	}
-	return &server{
-		svr: svr,
-	}, nil
-}
-
-type server struct {
-	svr *http.Server
-}
-
-func (s server) Run() error {
-	log.Printf("running at %s\n", s.svr.Addr)
-	return s.svr.ListenAndServe()
+	return svr, nil
 }
