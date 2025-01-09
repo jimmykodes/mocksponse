@@ -50,7 +50,7 @@ func (m *Handler) Handler(fp string) (http.Handler, error) {
 		if resp.Code != 0 {
 			w.WriteHeader(resp.Code)
 		}
-		if err := resp.write(r, w); err != nil {
+		if err := resp.write(w, r); err != nil {
 			log.Println("error writing data", err)
 		}
 	}), nil

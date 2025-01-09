@@ -6,6 +6,8 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+
+	"github.com/jimmykodes/mocksponse/internal/router"
 )
 
 type Response struct {
@@ -30,12 +32,12 @@ func (resp *Response) init(fp string) error {
 	return err
 }
 
-func (resp *Response) write(r *http.Request, w http.ResponseWriter) error {
+func (resp *Response) write(w http.ResponseWriter, r *http.Request) error {
 	return resp.tmpl.Execute(w, struct {
 		Vars   map[string]string
 		Params url.Values
 	}{
-		Vars:   map[string]string{},
+		Vars:   router.Vars(r),
 		Params: r.URL.Query(),
 	})
 }

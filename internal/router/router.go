@@ -1,6 +1,7 @@
 package router
 
 import (
+	"context"
 	"net/http"
 	"strings"
 )
@@ -25,23 +26,37 @@ func newRoute(value string) *Route {
 	}
 }
 
+type contextKey string
+
+const varsKey = contextKey("vars")
+
+func Vars(r *http.Request) map[string]string {
+	return r.Context().Value(varsKey).(map[string]string)
+}
+
+func SetVars(ctx context.Context, vars map[string]string) context.Context {
+	return context.WithValue(ctx, varsKey, vars)
+}
+
 func (ro *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	parts := strings.Split(r.URL.Path, "/")
+	vars := map[string]string{}
 
 	last := ro.Top
 	for _, part := range parts {
 		route := last.subroutes[part]
 		if route == nil {
+			if last.wild == nil {
+				ro.NotFoundHandler.ServeHTTP(w, r)
+				return
+			}
 			route = last.wild
-		}
-		if route == nil {
-			ro.NotFoundHandler.ServeHTTP(w, r)
-			return
+			vars[last.wild.Value[1:]] = part
 		}
 		last = route
 	}
 	if handler := last.Handlers[r.Method]; handler != nil {
-		handler.ServeHTTP(w, r)
+		handler.ServeHTTP(w, r.WithContext(SetVars(r.Context(), vars)))
 	} else {
 		ro.NotFoundHandler.ServeHTTP(w, r)
 	}
